@@ -1,9 +1,11 @@
 
 
-public class source {
+public class Source {
+
+
     public static void main(String[] args) throws Exception {
         
-        resource r1 = new resource(0, 1, "r1");
+        Resource r1 = new Resource(0, 1, "r1");
 
         System.out.println("Held by process " + r1.getOwner());
         System.out.println("Units: " + r1.getUnitCount());
@@ -17,6 +19,13 @@ public class source {
 
         System.out.println("Held by process " + r1.getOwner());
         System.out.println(r1.name + " units: " + r1.getUnitCount());
+
+        // Process p1 = new Process();
+        // Process p2 = new Process();
+
+        // System.out.println(p1.getID() + " created");
+
+        // System.out.println(p2.getID() + " contains " + p2.getChildList().size());
 
     }
 }

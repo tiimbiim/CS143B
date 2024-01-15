@@ -1,11 +1,9 @@
-public class resource {
+public class Resource {
     
     int owner, units;
     String name;
-    
 
-
-    public resource(int owner, int units, String name) {
+    public Resource(int owner, int units, String name) {
 
         this.owner = owner;
         this.units = units;
