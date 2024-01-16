@@ -23,7 +23,7 @@ public class Process {
 
         this.id = nextID++;
         this.state = STATE.BLOCKED.VALUE;
-        this.parent = 0;
+        // this.parent = 0;
         this.priority = 0;
         this.childrenList = new LinkedList<Process>();
         this.resourcesList = new LinkedList<Resource>();
@@ -39,10 +39,17 @@ public class Process {
     public void setState(int newState) { this.state = newState; }
     int getState() { return this.state; }
 
-    void setParent(int newParent) { this.parent = newParent; }
-    int getParent() { return this.parent; }
+    // void setParent(int newParent) { this.parent = newParent; }
+    // int getParent() { return this.parent; }
 
     void setPriority(int newPrio) { this.priority = newPrio; }
     int getPriority() { return this.priority; }
+
+    
+    public String toString() {
+
+        return "Process " + getID() + "\n" + "State: " + getState() + "\n"+ "Priority: " + getPriority();
+
+    }
 
 }

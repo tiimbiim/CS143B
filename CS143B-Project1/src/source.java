@@ -1,31 +1,45 @@
-
-
 public class Source {
 
+    static Process[] pcb;
+    static Resource[] rcb;
+
+    
+    public static Process create(int priority, int caller) {
+        
+        Process newProcess = new Process();
+
+        newProcess.setState(Process.STATE.READY.VALUE);
+        newProcess.setPriority(priority);
+        
+        pcb[newProcess.getID()] = newProcess;
+        
+        if(caller != newProcess.getID())
+        pcb[caller].getChildList().add(newProcess);     //in the case of init(), do not add Process 0 to its own childlist
+        
+        return newProcess;
+
+    }
+
+    public static void init() {
+
+        pcb = new Process[16];
+        rcb = new Resource[4];
+
+        create(0, 0);
+
+        create(1, 0);
+
+    }
 
     public static void main(String[] args) throws Exception {
         
-        Resource r1 = new Resource(0, 1, "r1");
+        init();
 
-        System.out.println("Held by process " + r1.getOwner());
-        System.out.println("Units: " + r1.getUnitCount());
+        for (int i = 0; i < 16; i++) {
 
-        r1.incrementUnits(1);
+            System.out.println(pcb[i].toString());
 
-        System.out.println(r1.name + " units: " + r1.getUnitCount());
-
-        r1.decrementUnits(1);
-        r1.setOwner(2);
-
-        System.out.println("Held by process " + r1.getOwner());
-        System.out.println(r1.name + " units: " + r1.getUnitCount());
-
-        // Process p1 = new Process();
-        // Process p2 = new Process();
-
-        // System.out.println(p1.getID() + " created");
-
-        // System.out.println(p2.getID() + " contains " + p2.getChildList().size());
+        }
 
     }
 }
