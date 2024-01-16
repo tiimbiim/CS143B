@@ -1,8 +1,10 @@
+import java.util.LinkedList;
+
 public class Source {
 
     static Process[] PCB;
     static Resource[] RCB;
-
+    static LinkedList<Process> RL;
     
     public static Process create(int priority, int caller) {
         
