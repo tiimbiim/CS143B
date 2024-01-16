@@ -1,7 +1,7 @@
 public class Source {
 
-    static Process[] pcb;
-    static Resource[] rcb;
+    static Process[] PCB;
+    static Resource[] RCB;
 
     
     public static Process create(int priority, int caller) {
@@ -11,10 +11,10 @@ public class Source {
         newProcess.setState(Process.STATE.READY.VALUE);
         newProcess.setPriority(priority);
         
-        pcb[newProcess.getID()] = newProcess;
+        PCB[newProcess.getID()] = newProcess;
         
         if(caller != newProcess.getID())
-        pcb[caller].getChildList().add(newProcess);     //in the case of init(), do not add Process 0 to its own childlist
+        PCB[caller].getChildList().add(newProcess);     //in the case of init(), do not add Process 0 to its own childlist
         
         return newProcess;
 
@@ -22,12 +22,12 @@ public class Source {
 
     public static void init() {
 
-        pcb = new Process[16];
-        rcb = new Resource[4];
+        PCB = new Process[16];
+        RCB = new Resource[4];
 
         create(0, 0);
-
         create(1, 0);
+        create(2, 0);
 
     }
 
@@ -37,7 +37,11 @@ public class Source {
 
         for (int i = 0; i < 16; i++) {
 
-            System.out.println(pcb[i].toString());
+            if(PCB[i] != null) {
+                System.out.println("PCB[" + i + "]\n" + PCB[i].printProcess());
+                System.out.println("Children: " + PCB[i].getChildList().toString());
+                System.out.println("Resources: " + PCB[i].getResourceList().toString() + "\n");
+            }
 
         }
 

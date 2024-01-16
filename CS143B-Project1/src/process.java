@@ -46,10 +46,11 @@ public class Process {
     int getPriority() { return this.priority; }
 
     
-    public String toString() {
+    public String printProcess() {
 
-        return "Process " + getID() + "\n" + "State: " + getState() + "\n"+ "Priority: " + getPriority();
+        return "Process " + getID() + " (" + this + ")" + "\n" + "State: " + getState() + "\n"+ "Priority: " + getPriority();
 
     }
+
 
 }
