@@ -3,15 +3,15 @@ import java.util.LinkedList;
 
 public class Source {
 
-    static Process[] PCB;
-    static Resource[] RCB;
-    static LinkedList<Process> RL;
+    static pcb[] PCB;
+    static rcb[] RCB;
+    static LinkedList<pcb> RL;
     
-    public static Process create(int priority, int caller) {
+    public static pcb create(int priority, int caller) {
         
-        Process newProcess = new Process();
+        pcb newProcess = new pcb();
 
-        newProcess.setState(Process.STATE.READY.VALUE);
+        newProcess.setState(pcb.STATE.READY.VALUE);
         newProcess.setPriority(priority);
         newProcess.setParent(caller);
         
@@ -31,7 +31,7 @@ public class Source {
 
         PCB[PCB[process].getParent()].getChildList().remove(PCB[process]);
         
-        for(Process p : RL) {
+        for(pcb p : RL) {
 
             if(p.getID() == process) {
 
@@ -39,16 +39,15 @@ public class Source {
                 break;
 
             }
-
         }
 
         System.out.println("Process " + process + " deleted");
 
     }
 
-    public static void deleteChildren(Process process) {
+    public static void deleteChildren(pcb process) {
 
-        for(Process child : process.getChildList()) {
+        for(pcb child : process.getChildList()) {
 
             deleteChildren(child);
             //release resources too
@@ -71,9 +70,9 @@ public class Source {
 
     public static void init() {
 
-        PCB = new Process[16];
-        RCB = new Resource[] {new Resource(1, "r0"), new Resource(1, "r1"), new Resource(2, "r2"), new Resource(3, "r3")};
-        RL = new LinkedList<Process>();
+        PCB = new pcb[16];
+        RCB = new rcb[] {new rcb(1, "r0"), new rcb(1, "r1"), new rcb(2, "r2"), new rcb(3, "r3")};
+        RL = new LinkedList<pcb>();
 
         create(0, 0);
         create(2, 0);
@@ -96,12 +95,12 @@ public class Source {
 
         Collections.sort(RL);
 
-        for(Process process : RL) {
+        for(pcb process : RL) {
 
             System.out.println(process.printProcess() + "\n");
             System.out.println("Process " + process.getID() + " children: ");
             
-            for(Process child : process.getChildList()) {
+            for(pcb child : process.getChildList()) {
 
                 System.out.println(child.printProcess() + "\n");
 
@@ -113,12 +112,12 @@ public class Source {
 
         delete(1);
 
-        for(Process process : RL) {
+        for(pcb process : RL) {
 
             System.out.println(process.printProcess() + "\n");
             System.out.println("Process " + process.getID() + " children: ");
             
-            for(Process child : process.getChildList()) {
+            for(pcb child : process.getChildList()) {
 
                 System.out.println(child.printProcess());
 

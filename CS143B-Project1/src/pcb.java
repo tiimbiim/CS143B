@@ -1,12 +1,12 @@
 import java.util.LinkedList;
 
-public class Process implements Comparable<Process> {
+public class pcb implements Comparable<pcb> {
     
     static int nextID = 0;
     int id, state, parent;
     int priority;
-    LinkedList<Process> childrenList;
-    LinkedList<Resource> resourcesList;
+    LinkedList<pcb> childrenList;
+    LinkedList<rcb> resourcesList;
 
     public enum STATE {
 
@@ -19,22 +19,22 @@ public class Process implements Comparable<Process> {
 
     }
 
-    public Process() {
+    public pcb() {
 
         this.id = nextID++;
-        this.state = STATE.BLOCKED.VALUE;
+        this.state = STATE.READY.VALUE;
         this.parent = 0;
         this.priority = 0;
-        this.childrenList = new LinkedList<Process>();
-        this.resourcesList = new LinkedList<Resource>();
+        this.childrenList = new LinkedList<pcb>();
+        this.resourcesList = new LinkedList<rcb>();
 
     }
 
-    LinkedList<Process> getChildList() { return childrenList; }
-    LinkedList<Resource> getResourceList() { return resourcesList; }
+    LinkedList<pcb> getChildList() { return childrenList; }
+    LinkedList<rcb> getResourceList() { return resourcesList; }
 
     @Override
-    public int compareTo(Process other) { return Integer.compare(other.priority, this.priority); }
+    public int compareTo(pcb other) { return Integer.compare(other.priority, this.priority); }
 
     int getID() { return this.id; }
     

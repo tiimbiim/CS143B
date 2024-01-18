@@ -1,13 +1,15 @@
-public class Resource {
+public class rcb {
     
     int owner, units;
     String name;
+    int[] waitList;
 
-    public Resource(int units, String name) {
+    public rcb(int units, String name) {
 
         this.owner = -1;        //by default, set to -1 for no owner
         this.units = units;
         this.name = name;
+        waitList = new int[3];      //max resource units caps at 3, so default to 3
 
     }
 
@@ -20,10 +22,12 @@ public class Resource {
         this.units += units; 
     }
     int getUnitCount() { return this.units; }
-
+    
     void setOwner(int newOwner) { this.owner = newOwner; }
     int getOwner() { return this.owner; }
 
     String getName() { return this.name; }
+
+    int[] getWaitList() { return this.waitList; }
 
 }
