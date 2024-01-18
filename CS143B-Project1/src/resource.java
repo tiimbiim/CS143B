@@ -3,9 +3,9 @@ public class Resource {
     int owner, units;
     String name;
 
-    public Resource(int owner, int units, String name) {
+    public Resource(int units, String name) {
 
-        this.owner = owner;
+        this.owner = -1;        //by default, set to -1 for no owner
         this.units = units;
         this.name = name;
 
