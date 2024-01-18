@@ -57,13 +57,26 @@ public class Source {
 
     }
 
-    public static void request(int resource, int units, int caller) {       //TODO need to reconsider Resource implementation
+    public static void request(int resource, int units, int caller) {
 
-        if(RCB[resource].getOwner() == -1) {        
+        if(RCB[resource].getUnitCount() >= 0) {        //a resource may have an owner, but may have additional units to spare
+            if(units <= RCB[resource].getUnitCount()) {
 
-            PCB[caller].getResourceList().add(RCB[resource]);
-            RCB[resource].setOwner(caller);
-            return;
+                PCB[caller].getResourceList().add(RCB[resource]);
+                RCB[resource].setOwner(caller);
+                return;
+
+            }
+            else {
+
+                System.out.println("You are requesting too many units of this resource!");      //TODO should be an error code (-1)
+
+            }
+        }
+        else {      
+
+
+
         }
 
     }
@@ -76,7 +89,7 @@ public class Source {
 
         create(0, 0);
         create(2, 0);
-        create(1, 0);
+        //create(1, 0);
 
 
 
@@ -95,6 +108,8 @@ public class Source {
 
         Collections.sort(RL);
 
+        request(0, 1, 1);
+
         for(pcb process : RL) {
 
             System.out.println(process.printProcess() + "\n");
@@ -110,22 +125,7 @@ public class Source {
 
         }
 
-        delete(1);
 
-        for(pcb process : RL) {
-
-            System.out.println(process.printProcess() + "\n");
-            System.out.println("Process " + process.getID() + " children: ");
-            
-            for(pcb child : process.getChildList()) {
-
-                System.out.println(child.printProcess());
-
-            }
-
-            System.out.println("-----------------------------------\n");
-
-        }
 
     }
 }

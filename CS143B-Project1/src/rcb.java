@@ -9,7 +9,7 @@ public class rcb {
         this.owner = -1;        //by default, set to -1 for no owner
         this.units = units;
         this.name = name;
-        waitList = new int[3];      //max resource units caps at 3, so default to 3
+        waitList = new int[15];      //there are 16 total processes, so edge case, all 16 processes request a single resource (1 holds it while the other 15 wait)
 
     }
 
