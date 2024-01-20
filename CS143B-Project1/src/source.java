@@ -63,7 +63,14 @@ public class Source {
             if(units <= RCB[resource].getUnitCount()) {
 
                 PCB[caller].getResourceList().add(RCB[resource]);
-                RCB[resource].setOwner(caller);
+
+                for (int i = 0; i < 15; i++) {
+
+                    if(RCB[resource].getOwners()[i] != -1)
+                        RCB[resource].getOwners()[i] = caller;
+
+                }
+
                 return;
 
             }
@@ -73,10 +80,27 @@ public class Source {
 
             }
         }
-        else {      
+        else {      //the resource has no free units
 
+            for (int i = 0; i < 15; i++) { 
 
+                if(RCB[resource].getWaitList()[i] != -1) 
+                    RCB[resource].getWaitList()[i] = caller;        //add the calling process to the desired RCB's waitlist
 
+            }        
+            
+        }
+
+    }
+
+    public static void release(int resource, int units, int caller) {
+
+        for(rcb r : PCB[caller].getResourceList()) {
+            if(r.getID() == resource) {
+
+                
+
+            }
         }
 
     }
@@ -84,7 +108,7 @@ public class Source {
     public static void init() {
 
         PCB = new pcb[16];
-        RCB = new rcb[] {new rcb(1, "r0"), new rcb(1, "r1"), new rcb(2, "r2"), new rcb(3, "r3")};
+        RCB = new rcb[] {new rcb(1), new rcb(1), new rcb(2), new rcb(3)};
         RL = new LinkedList<pcb>();
 
         create(0, 0);

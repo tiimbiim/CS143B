@@ -1,13 +1,14 @@
 public class rcb {
     
+    static int nextID = 0;
     int units, id;
     int[] owners;
     int[] waitList;
 
-    public rcb(int units, int id) {
+    public rcb(int units) {
 
         this.units = units;
-        this.id = id;
+        this.id = nextID++;
         owners = new int[units];     //there can only be as many owners as there are units
         waitList = new int[15];      //there are 16 total processes, so edge case, all 16 processes request a single resource (1 holds it while the other 15 wait)
 
