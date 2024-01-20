@@ -1,11 +1,12 @@
 import java.util.Collections;
 import java.util.LinkedList;
 
-public class Source {
+public class source {
 
     static pcb[] PCB;
     static rcb[] RCB;
     static LinkedList<pcb> RL;
+    static int currentRunningProcess;
     
     public static pcb create(int priority, int caller) {
         
@@ -66,10 +67,12 @@ public class Source {
 
                 for (int i = 0; i < 15; i++) {
 
-                    if(RCB[resource].getOwners()[i] != -1)
-                        RCB[resource].getOwners()[i] = caller;
+                    if(RCB[resource].getOwners().isEmpty())     //if the resource has no owners, add it to the RCB's owners list
+                        RCB[resource].getOwners().add(caller);
 
                 }
+
+                RCB[resource].decrementUnits(units);
 
                 return;
 
@@ -82,12 +85,7 @@ public class Source {
         }
         else {      //the resource has no free units
 
-            for (int i = 0; i < 15; i++) { 
-
-                if(RCB[resource].getWaitList()[i] != -1) 
-                    RCB[resource].getWaitList()[i] = caller;        //add the calling process to the desired RCB's waitlist
-
-            }        
+            RCB[resource].getWaitList().add(caller);
             
         }
 
@@ -96,12 +94,28 @@ public class Source {
     public static void release(int resource, int units, int caller) {
 
         for(rcb r : PCB[caller].getResourceList()) {
+
             if(r.getID() == resource) {
 
-                
+                PCB[caller].getResourceList().remove(r);
+                r.getOwners().remove(0);
 
             }
+
         }
+
+        //automatically remove the first element in the wait list and add to owners
+        //PCB[caller].getResourceList().add(RCB[resource]);
+        RCB[resource].getOwners().add(RCB[resource].getWaitList().get(0));
+        PCB[RCB[resource].getWaitList().get(0)].getResourceList().add(RCB[resource]);
+        RCB[resource].getWaitList().remove(0);
+
+    }
+
+    public static void timeOut() {
+
+
+
 
     }
 
@@ -113,9 +127,6 @@ public class Source {
 
         create(0, 0);
         create(2, 0);
-        //create(1, 0);
-
-
 
         for (int i = 0; i < 16; i++) {
 
@@ -139,11 +150,8 @@ public class Source {
             System.out.println(process.printProcess() + "\n");
             System.out.println("Process " + process.getID() + " children: ");
             
-            for(pcb child : process.getChildList()) {
-
+            for(pcb child : process.getChildList())
                 System.out.println(child.printProcess() + "\n");
-
-            }
 
             System.out.println("-----------------------------------\n");
 

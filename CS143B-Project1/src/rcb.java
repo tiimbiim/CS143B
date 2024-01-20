@@ -1,18 +1,18 @@
+import java.util.ArrayList;
+
 public class rcb {
     
     static int nextID = 0;
     int units, id;
-    int[] owners;
-    int[] waitList;
+    ArrayList<Integer> owners;
+    ArrayList<Integer> waitList;
 
     public rcb(int units) {
 
         this.units = units;
         this.id = nextID++;
-        owners = new int[units];     //there can only be as many owners as there are units
-        waitList = new int[15];      //there are 16 total processes, so edge case, all 16 processes request a single resource (1 holds it while the other 15 wait)
-
-        for(int i = 0; i < 15; i++) { waitList[i] = -1; }     //set all to -1 to show nothing is on waitlist
+        owners = new ArrayList<Integer>();     //there can only be as many owners as there are units
+        waitList = new ArrayList<Integer>();      //there are 16 total processes, so edge case, all 16 processes request a single resource (1 holds it while the other 15 wait)
 
         
 
@@ -30,8 +30,8 @@ public class rcb {
 
     int getID() { return this.id; }
 
-    int[] getWaitList() { return this.waitList; }
-    int[] getOwners() { return this.owners; }
+    ArrayList<Integer> getWaitList() { return this.waitList; }
+    ArrayList<Integer> getOwners() { return this.owners; }
 
 
 
