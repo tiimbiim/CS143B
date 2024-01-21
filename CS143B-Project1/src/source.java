@@ -1,19 +1,25 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class source {
 
     static pcb[] PCB;
     static rcb[] RCB;
     static RL RL;
-    static int currentRunningProcess;
+    static pcb currentRunningProcess;
+    String filePath;
     
     public static void create(int priority, int caller) {
         
         pcb newProcess = new pcb();
 
         newProcess.setState(pcb.STATE.READY.VALUE);
-        newProcess.setPriority(priority);       //TODO make priority dynamic
         newProcess.setParent(caller);
-        
+
+        if(priority == 0) { newProcess.setPriority(-1); }
+        else { newProcess.setPriority(priority); }
+
         PCB[newProcess.getID()] = newProcess;
         
         if(caller != newProcess.getID())
@@ -21,16 +27,17 @@ public class source {
 
 
         if(priority == 2) { 
-            System.out.println("Adding newly created process to Priority 2");
+
             RL.getPriorityTwo().add(newProcess); 
+            if(RL.getPriorityTwo().getFirst() == newProcess) { currentRunningProcess = RL.getPriorityTwo().getFirst(); }
         }
-        else if(priority == 1) {
-            System.out.println("Adding newly created process to Priority 1"); 
+        else if(priority == 1) { 
             RL.getPriorityOne().add(newProcess); 
+            if(RL.getPriorityOne().getFirst() == newProcess) { currentRunningProcess = RL.getPriorityOne().getFirst(); }
         }
         else if(priority == 0) { 
-            System.out.println("Adding newly created process to Priority 0");
-            RL.getPriorityZero().add(newProcess); 
+            RL.getPriorityZero().add(newProcess);
+            if(RL.getPriorityZero().getFirst() == newProcess) { currentRunningProcess = RL.getPriorityZero().getFirst(); }
         }
         else { System.out.println("An invalid priority has been entered"); }
         
@@ -53,9 +60,6 @@ public class source {
 
             }
         }
-
-        System.out.println("Process " + process + " deleted");
-
     }
 
     public static void deleteChildren(pcb process) {
@@ -66,16 +70,38 @@ public class source {
             //release resources too
         }
 
+        if(process.getPriority() == 2) {
+
+            RL.getPriorityTwo().remove(process);
+
+        }
+        else if(process.getPriority() == 1) {
+
+            RL.getPriorityOne().remove(process);
+
+        }
+        else if(process.getPriority() == 0) {
+
+            RL.getPriorityZero().remove(process);
+
+        }
+        else {
+
+            System.out.println("error");
+
+        }
+
         process.getChildList().clear();
+        
 
     }
 
     public static void request(int resource, int units, int caller) {
 
-        if(RCB[resource].getUnitCount() >= 0) {        //a resource may have an owner, but may have additional units to spare
-            if(units <= RCB[resource].getUnitCount()) {
+        if(RCB[resource].getUnitCount() >= units) {        //a resource may have an owner, but may have additional units to spare
+           
 
-                PCB[caller].getResourceList().add(RCB[resource]);
+                PCB[caller].getResourceList().put(RCB[resource], units);
 
                 for (int i = 0; i < 15; i++) {
 
@@ -86,18 +112,12 @@ public class source {
 
                 RCB[resource].decrementUnits(units);
 
-                return;
-
-            }
-            else {
-
-                System.out.println("You are requesting too many units of this resource!");      //TODO should be an error code (-1)
-
-            }
         }
         else {      //the resource has no free units
-
-            RCB[resource].getWaitList().add(caller);
+            //System.out.println("Process " + caller + " is requesting, but not enough/no resources are avaiable");
+            RCB[resource].getWaitList().put(caller, units);
+            PCB[caller].setState(pcb.STATE.BLOCKED.VALUE);
+            RL.getCurrentHighestPriority().remove(PCB[caller]);
             
         }
 
@@ -105,7 +125,7 @@ public class source {
 
     public static void release(int resource, int units, int caller) {
 
-        for(rcb r : PCB[caller].getResourceList()) {
+        for(rcb r : PCB[caller].getResourceList().keySet()) {
 
             if(r.getID() == resource) {
 
@@ -116,18 +136,29 @@ public class source {
 
         }
 
-        //automatically remove the first element in the wait list and add to owners
-        //PCB[caller].getResourceList().add(RCB[resource]);
-        RCB[resource].getOwners().add(RCB[resource].getWaitList().get(0));
-        PCB[RCB[resource].getWaitList().get(0)].getResourceList().add(RCB[resource]);
-        RCB[resource].getWaitList().remove(0);
+
+        if(!RCB[resource].getWaitList().isEmpty()) {
+
+            RCB[resource].getOwners().add(RCB[resource].getWaitList().get(0));      //Add the first PCB waiting for this resource to the owners list
+            PCB[RCB[resource].getWaitList().get(0)].getResourceList().put(RCB[resource], 0);       //add this resource to the PCB's resource list
+            RCB[resource].getWaitList().remove(0);      //remove the PCB from the resource's waitlist
+
+        }
 
     }
 
     public static void timeOut() {
 
+        if(!RL.getCurrentHighestPriority().isEmpty()) {
 
+            if(RL.getCurrentHighestPriority().size() == 1) { return; }      //if highest prio has only one PCB, it doesn't matter
 
+            pcb headElement = RL.getCurrentHighestPriority().removeFirst();
+            RL.getCurrentHighestPriority().add(headElement);
+
+        }
+
+        currentRunningProcess = RL.getCurrentHighestPriority().getFirst();
 
     }
 
@@ -139,63 +170,71 @@ public class source {
 
         create(0, 0);
 
-        currentRunningProcess = 0;
+    }
+
+    public static void processCommands() {
+
+        
 
     }
 
-    public static void main(String[] args) throws Exception {
-        
-        init();
-
-        //request(3, 3, 0);
-        create(2, 0);
-        create(1, 1);
-
-        //System.out.println(RL.getCurrentHighestPriority());
+    public static void printAllRLPriorities() {
 
         System.out.println("\nPRIORITY 2:");
 
         for(pcb process : RL.getPriorityTwo()) {
 
-            System.out.println(process.printProcess() + "\n");
+            System.out.println(process.printProcess());
+            System.out.println(process.printChildren());
+            System.out.println(process.printResources() + "\n");
 
         }
 
+        System.out.println("------------------------------------\n");
         System.out.println("PRIORITY 1: ");
 
         for (pcb process : RL.getPriorityOne()) {
 
-            System.out.println(process.printProcess() + "\n");
+            System.out.println(process.printProcess());
+            System.out.println(process.printChildren());
+            System.out.println(process.printResources() + "\n");
 
         }
 
+        System.out.println("------------------------------------\n");
         System.out.println("PRIORITY 0: ");
 
         for (pcb process : RL.getPriorityZero()) {
 
-            System.out.println(process.printProcess() + "\n");
+            System.out.println(process.printProcess());
+            System.out.println(process.printChildren());
+            System.out.println(process.printResources() + "\n");
 
         }
 
-        // for(pcb process : RL.getCurrentHighestPriority()) {
+        System.out.println("------------------------------------\n");
+        System.out.println("RCB: ");
+
+        for(int i = 0; i < 4; i++) {
+
+            System.out.println(RCB[i].printResource());
+            System.out.println(RCB[i].printOwners());
+            System.out.println(RCB[i].printWaitList());
 
 
-            // System.out.println(process.printProcess() + "\n");
-            // System.out.println("Process " + process.getID() + " children: ");
-            
-            // for(pcb child : process.getChildList())
-            //     System.out.println(child.printProcess() + "\n");
+        }
+    }
+    public static void main(String[] args) throws Exception {
+        
+        init();
 
-            // System.out.println("Process " + process.getID() + " resources: ");
+        create(2, 0);
 
-            // for(rcb resource : process.getResourceList())
-            //     System.out.println(resource + "\n");
+        request(3, 2, 0);
+        request(3, 2, 1);
 
-            // System.out.println("-----------------------------------\n");
+        printAllRLPriorities();
 
-        // }
-
-
-
+      
     }
 }

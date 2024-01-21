@@ -1,4 +1,6 @@
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 public class pcb implements Comparable<pcb> {
     
@@ -6,7 +8,7 @@ public class pcb implements Comparable<pcb> {
     int id, state, parent;
     int priority;
     LinkedList<pcb> childrenList;
-    LinkedList<rcb> resourcesList;
+    Map<rcb, Integer> resourcesList;
 
     public enum STATE {
         
@@ -26,12 +28,12 @@ public class pcb implements Comparable<pcb> {
         this.parent = 0;
         this.priority = 0;
         this.childrenList = new LinkedList<pcb>();
-        this.resourcesList = new LinkedList<rcb>();
+        this.resourcesList = new HashMap<>();
 
     }
 
     LinkedList<pcb> getChildList() { return childrenList; }
-    LinkedList<rcb> getResourceList() { return resourcesList; }
+    Map<rcb, Integer> getResourceList() { return resourcesList; }
 
     @Override
     public int compareTo(pcb other) { return Integer.compare(other.priority, this.priority); }
@@ -41,7 +43,7 @@ public class pcb implements Comparable<pcb> {
     void setParent(int newParent) { this.parent = newParent; }
     int getParent() { return this.parent; }
 
-    public void setState(int newState) { this.state = newState; }
+    public void setState(int newState) { this.state = newState; }       //0: Blocked, 1: Ready
     int getState() { return this.state; }
 
     void setPriority(int newPrio) { this.priority = newPrio; }
@@ -51,6 +53,34 @@ public class pcb implements Comparable<pcb> {
     public String printProcess() {
 
         return "[Process " + getID() + " (" + this + ")" + ", " + "State: " + getState() + ", "+ "Priority: " + getPriority() + ", " + "Parent: " + getParent() + "]\n";
+
+    }
+
+    public String printChildren() {
+        
+        String s = "Children: \n";
+
+        for (pcb p : childrenList) {
+
+            s += p.printProcess();
+
+        }
+
+        return s;
+
+    }
+
+    public String printResources() {
+
+        String r = "Resources: \n";
+
+        for (rcb p : resourcesList.keySet()) {
+
+            r += p.printResource();
+
+        }
+
+        return r;
 
     }
 
