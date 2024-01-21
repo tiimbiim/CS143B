@@ -9,7 +9,7 @@ public class pcb implements Comparable<pcb> {
     LinkedList<rcb> resourcesList;
 
     public enum STATE {
-
+        
         READY(1),
         BLOCKED(0);
 

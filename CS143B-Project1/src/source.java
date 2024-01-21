@@ -1,14 +1,12 @@
-import java.util.Collections;
-import java.util.LinkedList;
 
 public class source {
 
     static pcb[] PCB;
     static rcb[] RCB;
-    static LinkedList<pcb> RL;
+    static RL RL;
     static int currentRunningProcess;
     
-    public static pcb create(int priority, int caller) {
+    public static void create(int priority, int caller) {
         
         pcb newProcess = new pcb();
 
@@ -20,8 +18,22 @@ public class source {
         
         if(caller != newProcess.getID())
             PCB[caller].getChildList().add(newProcess);     //in the case of init(), do not add Process 0 to its own childlist
+
+
+        if(priority == 2) { 
+            System.out.println("Adding newly created process to Priority 2");
+            RL.getPriorityTwo().add(newProcess); 
+        }
+        else if(priority == 1) {
+            System.out.println("Adding newly created process to Priority 1"); 
+            RL.getPriorityOne().add(newProcess); 
+        }
+        else if(priority == 0) { 
+            System.out.println("Adding newly created process to Priority 0");
+            RL.getPriorityZero().add(newProcess); 
+        }
+        else { System.out.println("An invalid priority has been entered"); }
         
-        return newProcess;
 
     }
 
@@ -32,11 +44,11 @@ public class source {
 
         PCB[PCB[process].getParent()].getChildList().remove(PCB[process]);
         
-        for(pcb p : RL) {
+        for(pcb p : RL.getCurrentHighestPriority()) {
 
             if(p.getID() == process) {
 
-                RL.remove(p);
+                RL.getCurrentHighestPriority().remove(p);
                 break;
 
             }
@@ -123,15 +135,17 @@ public class source {
 
         PCB = new pcb[16];
         RCB = new rcb[] {new rcb(1), new rcb(1), new rcb(2), new rcb(3)};
-        RL = new LinkedList<pcb>();
+        RL = new RL();
 
-        create(0, 0);
-        create(2, 0);
+        //create(0, 0);
+        //create(2, 0);
+
+        currentRunningProcess = 0;
 
         for (int i = 0; i < 16; i++) {
 
             if(PCB[i] != null)
-                RL.add(PCB[i]);
+                RL.getCurrentHighestPriority().add(PCB[i]);
 
         }
 
@@ -141,21 +155,51 @@ public class source {
         
         init();
 
-        Collections.sort(RL);
+        //request(3, 3, 0);
 
-        request(0, 1, 1);
+        System.out.println(RL.getCurrentHighestPriority());
 
-        for(pcb process : RL) {
+        // System.out.println("\nPRIORITY 2:");
 
-            System.out.println(process.printProcess() + "\n");
-            System.out.println("Process " + process.getID() + " children: ");
+        // for(pcb process : RL.getPriorityTwo()) {
+
+        //     System.out.println(process.printProcess() + "\n");
+
+        // }
+
+        // System.out.println("PRIORITY 1: ");
+
+        // for (pcb process : RL.getPriorityOne()) {
+
+        //     System.out.println(process.printProcess() + "\n");
+
+        // }
+
+        // System.out.println("PRIORITY 0: ");
+
+        // for (pcb process : RL.getPriorityZero()) {
+
+        //     System.out.println(process.printProcess() + "\n");
+
+        // }
+
+        // for(pcb process : RL.getCurrentHighestPriority()) {
+
+
+            // System.out.println(process.printProcess() + "\n");
+            // System.out.println("Process " + process.getID() + " children: ");
             
-            for(pcb child : process.getChildList())
-                System.out.println(child.printProcess() + "\n");
+            // for(pcb child : process.getChildList())
+            //     System.out.println(child.printProcess() + "\n");
 
-            System.out.println("-----------------------------------\n");
+            // System.out.println("Process " + process.getID() + " resources: ");
 
-        }
+            // for(rcb resource : process.getResourceList())
+            //     System.out.println(resource + "\n");
+
+            // System.out.println("-----------------------------------\n");
+
+        // }
 
 
 
