@@ -1,4 +1,4 @@
-import java.io.BufferedReader;
+import java.util.Scanner;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -8,7 +8,7 @@ public class source {
     static rcb[] RCB;
     static RL RL;
     static pcb currentRunningProcess;
-    String filePath;
+    static String filePath;
     
     public static void create(int priority, int caller) {
         
@@ -172,12 +172,6 @@ public class source {
 
     }
 
-    public static void processCommands() {
-
-        
-
-    }
-
     public static void printAllRLPriorities() {
 
         System.out.println("\nPRIORITY 2:");
@@ -226,15 +220,45 @@ public class source {
     }
     public static void main(String[] args) throws Exception {
         
-        init();
+        filePath = "input1.txt";
 
-        create(2, 0);
+        try(Scanner bim = new Scanner(new FileReader(filePath))) {
 
-        request(3, 2, 0);
-        request(3, 2, 1);
+            while(bim.hasNextLine()) {
 
-        printAllRLPriorities();
+                String line = bim.nextLine();
 
+                Scanner bim2 = new Scanner(line);
+
+                String command = bim2.next();
+                
+                if(bim2.hasNextInt()) {
+
+                    int number1 = bim2.nextInt();
+
+                    if(bim2.hasNextInt()) {
+    
+                        int number2 = bim2.nextInt();
+
+                        System.out.println(command + number1 + number2);
+                        continue;
+                    }
+
+                    System.out.println(command + number1);
+                    continue;
+                }
+                    
+                System.out.println(command);
+
+                bim2.close();
+            }
+
+        }
+        catch (IOException e) {
+
+            e.printStackTrace();
+
+        }
       
     }
 }
