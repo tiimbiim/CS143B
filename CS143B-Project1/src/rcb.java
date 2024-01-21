@@ -14,8 +14,6 @@ public class rcb {
         owners = new ArrayList<Integer>();     //there can only be as many owners as there are units
         waitList = new ArrayList<Integer>();      //there are 16 total processes, so edge case, all 16 processes request a single resource (1 holds it while the other 15 wait)
 
-        
-
     }
 
     void decrementUnits(int units) { 

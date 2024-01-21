@@ -11,7 +11,7 @@ public class source {
         pcb newProcess = new pcb();
 
         newProcess.setState(pcb.STATE.READY.VALUE);
-        newProcess.setPriority(priority);
+        newProcess.setPriority(priority);       //TODO make priority dynamic
         newProcess.setParent(caller);
         
         PCB[newProcess.getID()] = newProcess;
@@ -137,17 +137,9 @@ public class source {
         RCB = new rcb[] {new rcb(1), new rcb(1), new rcb(2), new rcb(3)};
         RL = new RL();
 
-        //create(0, 0);
-        //create(2, 0);
+        create(0, 0);
 
         currentRunningProcess = 0;
-
-        for (int i = 0; i < 16; i++) {
-
-            if(PCB[i] != null)
-                RL.getCurrentHighestPriority().add(PCB[i]);
-
-        }
 
     }
 
@@ -156,32 +148,34 @@ public class source {
         init();
 
         //request(3, 3, 0);
+        create(2, 0);
+        create(1, 1);
 
-        System.out.println(RL.getCurrentHighestPriority());
+        //System.out.println(RL.getCurrentHighestPriority());
 
-        // System.out.println("\nPRIORITY 2:");
+        System.out.println("\nPRIORITY 2:");
 
-        // for(pcb process : RL.getPriorityTwo()) {
+        for(pcb process : RL.getPriorityTwo()) {
 
-        //     System.out.println(process.printProcess() + "\n");
+            System.out.println(process.printProcess() + "\n");
 
-        // }
+        }
 
-        // System.out.println("PRIORITY 1: ");
+        System.out.println("PRIORITY 1: ");
 
-        // for (pcb process : RL.getPriorityOne()) {
+        for (pcb process : RL.getPriorityOne()) {
 
-        //     System.out.println(process.printProcess() + "\n");
+            System.out.println(process.printProcess() + "\n");
 
-        // }
+        }
 
-        // System.out.println("PRIORITY 0: ");
+        System.out.println("PRIORITY 0: ");
 
-        // for (pcb process : RL.getPriorityZero()) {
+        for (pcb process : RL.getPriorityZero()) {
 
-        //     System.out.println(process.printProcess() + "\n");
+            System.out.println(process.printProcess() + "\n");
 
-        // }
+        }
 
         // for(pcb process : RL.getCurrentHighestPriority()) {
 

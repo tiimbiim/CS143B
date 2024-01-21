@@ -50,7 +50,7 @@ public class pcb implements Comparable<pcb> {
 
     public String printProcess() {
 
-        return "Process " + getID() + " (" + this + ")" + "\n" + "State: " + getState() + "\n"+ "Priority: " + getPriority() + "\n" + "Parent: " + getParent();
+        return "[Process " + getID() + " (" + this + ")" + ", " + "State: " + getState() + ", "+ "Priority: " + getPriority() + ", " + "Parent: " + getParent() + "]\n";
 
     }
 
