@@ -19,11 +19,11 @@ public class rcb {
     }
 
     void decrementUnits(int units) { 
-        System.out.println("Units decrementing by " + units);
+        //System.out.println("Units decrementing by " + units);
         this.units -= units; 
     }
     void incrementUnits(int units) { 
-        System.out.println("Units incrementing by " + units);
+        //System.out.println("Units incrementing by " + units);
         this.units += units; 
     }
     int getUnitCount() { return this.units; }
@@ -40,7 +40,7 @@ public class rcb {
 
         String s = "Owners: \n";
 
-        for (int i : getOwners()) {
+        for (int i = 0; i < getOwners().size(); i++) {
 
             s += "[Process " + owners.get(i) + "]";
 
