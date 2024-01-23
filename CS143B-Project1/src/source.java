@@ -220,16 +220,14 @@ public class source {
     }
     public static void main(String[] args) throws Exception {
         
-        filePath = "input1.txt";
+        filePath = "CS143B-Project1\\input1.txt";
 
         try(Scanner bim = new Scanner(new FileReader(filePath))) {
 
             while(bim.hasNextLine()) {
 
                 String line = bim.nextLine();
-
                 Scanner bim2 = new Scanner(line);
-
                 String command = bim2.next();
                 
                 if(bim2.hasNextInt()) {
@@ -238,20 +236,50 @@ public class source {
 
                     if(bim2.hasNextInt()) {
     
-                        int number2 = bim2.nextInt();
+                        int number2 = bim2.nextInt();       //for 2 paraemeter commands (rq, rl)
 
-                        System.out.println(command + number1 + number2);
+                        //System.out.println(command + number1 + number2);  
+
+                        if(command.equals("rq"))
+                            request(number1, number2, currentRunningProcess.getID());
+                        else if(command.equals("rl"))
+                            request(number1, number2, currentRunningProcess.getID());
+                        else
+                            System.out.println("bad input");
+
+                        System.out.println(currentRunningProcess.getID());
+
                         continue;
                     }
 
-                    System.out.println(command + number1);
+                    //System.out.println(command + number1);        //for 1 parameter commands (cr, de)
+                    if(command.equals("cr"))
+                        create(number1, currentRunningProcess.getID());
+                    else if(command.equals("dl"))
+                        delete(number1);
+                    else
+                        System.out.println("bad input");
+
+                    System.out.println(currentRunningProcess.getID());
+
                     continue;
                 }
                     
-                System.out.println(command);
+                //System.out.println(command);      //for 0 parameter commands (in, to)
+
+                if(command.equals("in"))    
+                    init();
+                else if(command.equals("to"))
+                    timeOut();
+                else 
+                    System.out.println("bad input");
+
+                System.out.println(currentRunningProcess.getID());
 
                 bim2.close();
             }
+
+            //printAllRLPriorities();
 
         }
         catch (IOException e) {

@@ -24,17 +24,17 @@ public class RL {
 
             if(PriorityOne.isEmpty()) {
 
-                System.out.println("Returning Priority 0");
+                //System.out.println("Returning Priority 0");
                 return PriorityZero;
 
             }
 
-            System.out.println("Returning Priority 1");
+            //System.out.println("Returning Priority 1");
             return PriorityOne;
 
         }
 
-        System.out.println("Returning Priority 2");
+        //System.out.println("Returning Priority 2");
 
         return PriorityTwo;
 
