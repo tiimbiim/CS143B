@@ -20,11 +20,11 @@ public class rcb {
     }
 
     void decrementUnits(int units) { 
-        System.out.println("Units decrementing by " + units);
+        //System.out.println("Units decrementing by " + units);
         this.units -= units; 
     }
     void incrementUnits(int units) { 
-        System.out.println("Units incrementing by " + units);
+        //System.out.println("Units incrementing by " + units);
         this.units += units; 
     }
     int getUnitCount() { return this.units; }

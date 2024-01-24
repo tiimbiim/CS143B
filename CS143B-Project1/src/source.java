@@ -42,6 +42,8 @@ public class source {
         else { System.out.println("An invalid priority has been entered"); }
         
 
+        System.out.println(currentRunningProcess.getID());
+
     }
 
     public static void delete(int process) {
@@ -60,6 +62,9 @@ public class source {
 
             }
         }
+
+        System.out.println(currentRunningProcess.getID());
+
     }
 
     public static void deleteChildren(pcb process) {
@@ -120,6 +125,8 @@ public class source {
             RL.getCurrentHighestPriority().remove(PCB[caller]);
             
         }
+        
+        System.out.println(currentRunningProcess.getID());
 
     }
 
@@ -129,8 +136,19 @@ public class source {
 
             if(r.getID() == resource) {
 
-                PCB[caller].getResourceList().remove(r);
-                r.getOwners().remove(0);
+                PCB[caller].getResourceList().put(r, PCB[caller].getResourceList().get(r) - units);
+
+                if(PCB[caller].getResourceList().get(r) == 0) {
+
+                    r.getOwners().remove(0);
+
+                }
+
+
+            }
+            else {
+
+                System.out.println("You don't even own this resource");
 
             }
 
@@ -144,6 +162,8 @@ public class source {
             RCB[resource].getWaitList().remove(0);      //remove the PCB from the resource's waitlist
 
         }
+
+        System.out.println(currentRunningProcess.getID());
 
     }
 
@@ -159,6 +179,7 @@ public class source {
         }
 
         currentRunningProcess = RL.getCurrentHighestPriority().getFirst();
+        System.out.println(currentRunningProcess.getID());
 
     }
 
@@ -209,18 +230,17 @@ public class source {
         System.out.println("------------------------------------\n");
         System.out.println("RCB: ");
 
-        for(int i = 0; i < 4; i++) {
+        for(int i = 0; i < RCB.length; i++) {
 
             System.out.println(RCB[i].printResource());
             System.out.println(RCB[i].printOwners());
             System.out.println(RCB[i].printWaitList());
 
-
         }
     }
     public static void main(String[] args) throws Exception {
         
-        filePath = "CS143B-Project1\\input1.txt";
+        filePath = "input1.txt";
 
         try(Scanner bim = new Scanner(new FileReader(filePath))) {
 
@@ -247,7 +267,7 @@ public class source {
                         else
                             System.out.println("bad input");
 
-                        System.out.println(currentRunningProcess.getID());
+                       //System.out.println(currentRunningProcess.getID());
 
                         continue;
                     }
@@ -260,7 +280,7 @@ public class source {
                     else
                         System.out.println("bad input");
 
-                    System.out.println(currentRunningProcess.getID());
+                    //System.out.println(currentRunningProcess.getID());
 
                     continue;
                 }
@@ -274,7 +294,7 @@ public class source {
                 else 
                     System.out.println("bad input");
 
-                System.out.println(currentRunningProcess.getID());
+                //System.out.println(currentRunningProcess.getID());
 
                 bim2.close();
             }
