@@ -1,20 +1,21 @@
-import java.util.ArrayList;
+//import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class rcb {
     
     static int nextID = 0;
     int units, id;
-    ArrayList<Integer> owners;
+    Map<Integer, Integer> owners;
     Map<Integer, Integer> waitList;     //in the form (Process : UnitsHeld)
 
     public rcb(int units) {
 
         this.units = units;
         this.id = nextID++;
-        owners = new ArrayList<Integer>();
-        waitList = new HashMap<>();
+        owners = new HashMap<>();
+        waitList = new LinkedHashMap<>();
 
     }
 
@@ -31,7 +32,7 @@ public class rcb {
     int getID() { return this.id; }
 
     Map<Integer, Integer> getWaitList() { return this.waitList; }
-    ArrayList<Integer> getOwners() { return this.owners; }
+    Map<Integer, Integer> getOwners() { return this.owners; }
 
     String printResource() { 
         return "[Resource " + getID() + " (" + this + ")" + "]"; 
@@ -40,9 +41,9 @@ public class rcb {
 
         String s = "Owners: \n";
 
-        for (int i : getOwners()) {
+        for (int i : getOwners().keySet()) {
 
-            s += "[Process " + owners.get(i) + "]";
+            s += "[Process " + i + " : " + owners.get(i) + "]";
 
         }
 

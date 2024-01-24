@@ -139,7 +139,7 @@ public class source {
 
         if(!RCB[resource].getWaitList().isEmpty()) {
 
-            RCB[resource].getOwners().add(RCB[resource].getWaitList().get(0));      //Add the first PCB waiting for this resource to the owners list
+            RCB[resource].getOwners().put(RCB[resource].getWaitList().get(0));      //Add the first PCB waiting for this resource to the owners list
             PCB[RCB[resource].getWaitList().get(0)].getResourceList().put(RCB[resource], 0);       //add this resource to the PCB's resource list
             RCB[resource].getWaitList().remove(0);      //remove the PCB from the resource's waitlist
 
