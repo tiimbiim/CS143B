@@ -61,6 +61,8 @@ public class rcb {
 
         }
 
+        s += "\n";
+
         return s;
 
     }

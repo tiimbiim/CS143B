@@ -1,4 +1,3 @@
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Scanner;
 import java.io.FileReader;
@@ -117,11 +116,17 @@ public class source {
 
         }
         else {      //the resource has no free units
-            //System.out.println("Process " + caller + " is requesting, but not enough/no resources are avaiable");
+            
+            // if(PCB[caller].getResourceList().containsKey(RCB[resource]))        //the calling function owns this resource (hence why it has no units), so it should not get waitlisted
+            //     return;
+
             RCB[resource].getWaitList().put(caller, units);
             PCB[caller].setState(pcb.STATE.BLOCKED.VALUE);
+            timeOut();      //since the current running process just got blocked, switch to the next
             RL.getCurrentHighestPriority().remove(PCB[caller]);
             
+            currentRunningProcess = RL.getCurrentHighestPriority().getFirst();
+
         }
         
         System.out.print(currentRunningProcess.getID());
@@ -142,12 +147,8 @@ public class source {
                         r.getOwners().remove(0);
 
                     }
-
-
                 }
-
             }
-
         }
         else {
 
@@ -159,17 +160,19 @@ public class source {
         if(!RCB[resource].getWaitList().isEmpty()) {
 
             RCB[resource].getOwners().put(getFirst(RCB[resource].getWaitList()).getKey(), getFirst(RCB[resource].getWaitList()).getValue());      //Add the first PCB waiting for this resource to the owners list
-            PCB[getFirst(RCB[resource].getWaitList()).getKey()].getResourceList().put(RCB[resource], RCB[resource].getWaitList().entrySet().iterator().next().getValue());       //add this resource to the PCB's resource list
+            PCB[getFirst(RCB[resource].getWaitList()).getKey()].getResourceList().put(RCB[resource], getFirst(RCB[resource].getWaitList()).getValue());       //add this resource to the PCB's resource list
             
-            if( PCB[RCB[resource].getWaitList().entrySet().iterator().next().getKey()].getPriority() == 2)
-                RL.getPriorityTwo().add(PCB[RCB[resource].getWaitList().entrySet().iterator().next().getKey()]);
-            else if(PCB[RCB[resource].getWaitList().entrySet().iterator().next().getKey()].getPriority() == 1) 
-                RL.getPriorityOne().add( PCB[RCB[resource].getWaitList().entrySet().iterator().next().getKey()]);
-            else if( PCB[RCB[resource].getWaitList().entrySet().iterator().next().getKey()].getPriority() == 0)
-                RL.getPriorityZero().add( PCB[RCB[resource].getWaitList().entrySet().iterator().next().getKey()]);
+            if( PCB[getFirst(RCB[resource].getWaitList()).getKey()].getPriority() == 2)
+                RL.getPriorityTwo().add(PCB[getFirst(RCB[resource].getWaitList()).getKey()]);
 
-            PCB[RCB[resource].getWaitList().entrySet().iterator().next().getKey()].setState(pcb.STATE.READY.VALUE);
-            RCB[resource].getWaitList().remove(RCB[resource].getWaitList().entrySet().iterator().next().getKey());      //remove the PCB from the resource's waitlist
+            else if(PCB[getFirst(RCB[resource].getWaitList()).getKey()].getPriority() == 1) 
+                RL.getPriorityOne().add( PCB[getFirst(RCB[resource].getWaitList()).getKey()]);
+
+            else if( PCB[getFirst(RCB[resource].getWaitList()).getKey()].getPriority() == 0)
+                RL.getPriorityZero().add( PCB[getFirst(RCB[resource].getWaitList()).getKey()]);
+
+            PCB[getFirst(RCB[resource].getWaitList()).getKey()].setState(pcb.STATE.READY.VALUE);
+            RCB[resource].getWaitList().remove(getFirst(RCB[resource].getWaitList()).getKey());      //remove the PCB from the resource's waitlist
 
 
 
@@ -266,7 +269,7 @@ public class source {
     }
     public static void main(String[] args) throws Exception {
         
-        filePath = "CS143B-Project1\\input1.txt";
+        filePath = "input1.txt";       //for laptop, "CS143B-Project1\\input1.txt"
 
         try(Scanner bim = new Scanner(new FileReader(filePath))) {
 
@@ -336,7 +339,7 @@ public class source {
                 bim2.close();
             }
 
-            //printAllRLPriorities();
+            printAllRLPriorities();
 
         }
         catch (IOException e) {
