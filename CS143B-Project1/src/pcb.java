@@ -35,6 +35,8 @@ public class pcb implements Comparable<pcb> {
     LinkedList<pcb> getChildList() { return childrenList; }
     Map<rcb, Integer> getResourceList() { return resourcesList; }
 
+    static void resetID() { nextID = 0; }
+
     @Override
     public int compareTo(pcb other) { return Integer.compare(other.priority, this.priority); }
 

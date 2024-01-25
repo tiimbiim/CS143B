@@ -22,7 +22,7 @@ public class source {
 
         PCB[newProcess.getID()] = newProcess;
         
-        if(caller != newProcess.getID())
+        if(caller != 0)
             PCB[caller].getChildList().add(newProcess);     //in the case of init(), do not add Process 0 to its own childlist
 
 
@@ -42,7 +42,7 @@ public class source {
         else { System.out.println("An invalid priority has been entered"); }
         
 
-        System.out.println(currentRunningProcess.getID());
+        System.out.print(currentRunningProcess.getID());
 
     }
 
@@ -58,12 +58,12 @@ public class source {
             if(p.getID() == process) {
 
                 RL.getCurrentHighestPriority().remove(p);
-                break;
+                //break;
 
             }
         }
 
-        System.out.println(currentRunningProcess.getID());
+        System.out.print(currentRunningProcess.getID());
 
     }
 
@@ -106,16 +106,12 @@ public class source {
         if(RCB[resource].getUnitCount() >= units) {        //a resource may have an owner, but may have additional units to spare
            
 
-                PCB[caller].getResourceList().put(RCB[resource], units);
+            PCB[caller].getResourceList().put(RCB[resource], units);
 
-                for (int i = 0; i < 15; i++) {
+            if(!RCB[resource].getOwners().containsKey(caller))     //if the resource has no owners, add it to the RCB's owners list
+                RCB[resource].getOwners().put(caller, units);
 
-                    if(RCB[resource].getOwners().isEmpty())     //if the resource has no owners, add it to the RCB's owners list
-                        RCB[resource].getOwners().add(caller);
-
-                }
-
-                RCB[resource].decrementUnits(units);
+            RCB[resource].decrementUnits(units);
 
         }
         else {      //the resource has no free units
@@ -126,44 +122,58 @@ public class source {
             
         }
         
-        System.out.println(currentRunningProcess.getID());
+        System.out.print(currentRunningProcess.getID());
 
     }
 
     public static void release(int resource, int units, int caller) {
 
-        for(rcb r : PCB[caller].getResourceList().keySet()) {
+        if(PCB[caller].getResourceList().containsKey(RCB[resource]) && PCB[caller].getResourceList().get(RCB[resource]) >= units) {      //if the process actually owns the resource and has more than it's trying to release
+            for(rcb r : PCB[caller].getResourceList().keySet()) {
 
-            if(r.getID() == resource) {
+                if(r.getID() == resource) {
 
-                PCB[caller].getResourceList().put(r, PCB[caller].getResourceList().get(r) - units);
+                    PCB[caller].getResourceList().put(r, PCB[caller].getResourceList().get(r) - units);
 
-                if(PCB[caller].getResourceList().get(r) == 0) {
+                    if(PCB[caller].getResourceList().get(r) == 0) {
 
-                    r.getOwners().remove(0);
+                        r.getOwners().remove(0);
+
+                    }
+
 
                 }
 
-
-            }
-            else {
-
-                System.out.println("You don't even own this resource");
-
             }
 
         }
+        else {
 
+            System.out.println("-1");       //the calling process does not own/have enough of the resource to release
+            return;
+
+        }
 
         if(!RCB[resource].getWaitList().isEmpty()) {
 
-            RCB[resource].getOwners().put(RCB[resource].getWaitList().get(0));      //Add the first PCB waiting for this resource to the owners list
-            PCB[RCB[resource].getWaitList().get(0)].getResourceList().put(RCB[resource], 0);       //add this resource to the PCB's resource list
-            RCB[resource].getWaitList().remove(0);      //remove the PCB from the resource's waitlist
+            RCB[resource].getOwners().put(RCB[resource].getWaitList().entrySet().iterator().next().getKey(), RCB[resource].getWaitList().get(0));      //Add the first PCB waiting for this resource to the owners list
+            PCB[RCB[resource].getWaitList().entrySet().iterator().next().getKey()].getResourceList().put(RCB[resource], RCB[resource].getWaitList().entrySet().iterator().next().getValue());       //add this resource to the PCB's resource list
+            
+            if( PCB[RCB[resource].getWaitList().entrySet().iterator().next().getKey()].getPriority() == 2)
+                RL.getPriorityTwo().add(PCB[RCB[resource].getWaitList().entrySet().iterator().next().getKey()]);
+            else if(PCB[RCB[resource].getWaitList().entrySet().iterator().next().getKey()].getPriority() == 1) 
+                RL.getPriorityOne().add( PCB[RCB[resource].getWaitList().entrySet().iterator().next().getKey()]);
+            else if( PCB[RCB[resource].getWaitList().entrySet().iterator().next().getKey()].getPriority() == 0)
+                RL.getPriorityZero().add( PCB[RCB[resource].getWaitList().entrySet().iterator().next().getKey()]);
+
+            PCB[RCB[resource].getWaitList().entrySet().iterator().next().getKey()].setState(pcb.STATE.READY.VALUE);
+            RCB[resource].getWaitList().remove(RCB[resource].getWaitList().entrySet().iterator().next().getKey());      //remove the PCB from the resource's waitlist
+
+
 
         }
 
-        System.out.println(currentRunningProcess.getID());
+        System.out.print(currentRunningProcess.getID());
 
     }
 
@@ -179,17 +189,23 @@ public class source {
         }
 
         currentRunningProcess = RL.getCurrentHighestPriority().getFirst();
-        System.out.println(currentRunningProcess.getID());
+        System.out.print(currentRunningProcess.getID());
 
     }
 
     public static void init() {
 
+        pcb.resetID();
+        rcb.resetID();
+
         PCB = new pcb[16];
         RCB = new rcb[] {new rcb(1), new rcb(1), new rcb(2), new rcb(3)};
         RL = new RL();
 
+        System.out.print("\n");
+
         create(0, 0);
+
 
     }
 
@@ -240,16 +256,21 @@ public class source {
     }
     public static void main(String[] args) throws Exception {
         
-        filePath = "input1.txt";
+        filePath = "CS143B-Project1\\input1.txt";
 
         try(Scanner bim = new Scanner(new FileReader(filePath))) {
 
             while(bim.hasNextLine()) {
 
                 String line = bim.nextLine();
+
+                if(line.trim().isEmpty())
+                    continue;
+
                 Scanner bim2 = new Scanner(line);
                 String command = bim2.next();
                 
+
                 if(bim2.hasNextInt()) {
 
                     int number1 = bim2.nextInt();
@@ -263,9 +284,11 @@ public class source {
                         if(command.equals("rq"))
                             request(number1, number2, currentRunningProcess.getID());
                         else if(command.equals("rl"))
-                            request(number1, number2, currentRunningProcess.getID());
-                        else
+                            release(number1, number2, currentRunningProcess.getID());
+                        else {
+                            //System.out.println(command + number1 + number2); 
                             System.out.println("bad input");
+                        }
 
                        //System.out.println(currentRunningProcess.getID());
 
@@ -275,10 +298,12 @@ public class source {
                     //System.out.println(command + number1);        //for 1 parameter commands (cr, de)
                     if(command.equals("cr"))
                         create(number1, currentRunningProcess.getID());
-                    else if(command.equals("dl"))
+                    else if(command.equals("de"))
                         delete(number1);
-                    else
+                    else {
+                        //System.out.println(command + number1);
                         System.out.println("bad input");
+                    }
 
                     //System.out.println(currentRunningProcess.getID());
 
@@ -291,8 +316,10 @@ public class source {
                     init();
                 else if(command.equals("to"))
                     timeOut();
-                else 
+                else {
+                    //System.out.println(command);
                     System.out.println("bad input");
+                }
 
                 //System.out.println(currentRunningProcess.getID());
 

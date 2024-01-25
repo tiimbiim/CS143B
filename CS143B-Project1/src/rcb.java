@@ -19,6 +19,8 @@ public class rcb {
 
     }
 
+    static void resetID() { nextID = 0; }
+
     void decrementUnits(int units) { 
         //System.out.println("Units decrementing by " + units);
         this.units -= units; 
