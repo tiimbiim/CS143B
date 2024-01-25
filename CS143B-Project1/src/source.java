@@ -104,8 +104,11 @@ public class source {
 
     public static void request(int resource, int units, int caller) {
 
+        // System.out.println("[" + units + " units of resource " + resource + " have been requested]");
+
         if(RCB[resource].getUnitCount() >= units) {        //a resource may have an owner, but may have additional units to spare
            
+            // System.out.println("[There are " + RCB[resource].getUnitCount() + " units of resource " + resource + " available]");
 
             PCB[caller].getResourceList().put(RCB[resource], units);
 
@@ -114,22 +117,34 @@ public class source {
 
             RCB[resource].decrementUnits(units);
 
+            System.out.print(currentRunningProcess.getID());
+
         }
         else {      //the resource has no free units
+
+            // System.out.println("[Process " + caller + " has requested " + units + " units of resource " + resource + " but there are only " + RCB[resource].getUnitCount() + "]");
             
             // if(PCB[caller].getResourceList().containsKey(RCB[resource]))        //the calling function owns this resource (hence why it has no units), so it should not get waitlisted
             //     return;
 
             RCB[resource].getWaitList().put(caller, units);
             PCB[caller].setState(pcb.STATE.BLOCKED.VALUE);
-            timeOut();      //since the current running process just got blocked, switch to the next
-            RL.getCurrentHighestPriority().remove(PCB[caller]);
             
-            currentRunningProcess = RL.getCurrentHighestPriority().getFirst();
+            // if(RL.getCurrentHighestPriority().size() == 1) {
 
+            //     if(RL.getCurrentHighestPriority().getFirst().getPriority() == pcb.STATE.BLOCKED.VALUE) {        //strange case where a lone process needs to be proc switched bc of being waitlisted
+    
+                    
+    
+            //     }
+    
+            // }
+
+            RL.getCurrentHighestPriority().remove(PCB[caller]);
+            currentRunningProcess = RL.getCurrentHighestPriority().getFirst();
+            System.out.print(currentRunningProcess.getID());
         }
         
-        System.out.print(currentRunningProcess.getID());
 
     }
 
@@ -142,11 +157,10 @@ public class source {
 
                     PCB[caller].getResourceList().put(r, PCB[caller].getResourceList().get(r) - units);
 
-                    if(PCB[caller].getResourceList().get(r) == 0) {
-
+                    if(PCB[caller].getResourceList().get(r) == 0) 
                         r.getOwners().remove(0);
 
-                    }
+                    
                 }
             }
         }
@@ -156,7 +170,7 @@ public class source {
             return;
 
         }
-
+    
         if(!RCB[resource].getWaitList().isEmpty()) {
 
             RCB[resource].getOwners().put(getFirst(RCB[resource].getWaitList()).getKey(), getFirst(RCB[resource].getWaitList()).getValue());      //Add the first PCB waiting for this resource to the owners list
@@ -184,9 +198,7 @@ public class source {
 
     public static void timeOut() {
 
-        if(!RL.getCurrentHighestPriority().isEmpty()) {
-
-            if(RL.getCurrentHighestPriority().size() == 1) { return; }      //if highest prio has only one PCB, it doesn't matter
+        if(!RL.getCurrentHighestPriority().isEmpty() && RL.getCurrentHighestPriority().size() != 1) {     
 
             pcb headElement = RL.getCurrentHighestPriority().removeFirst();
             RL.getCurrentHighestPriority().add(headElement);
@@ -194,6 +206,7 @@ public class source {
         }
 
         currentRunningProcess = RL.getCurrentHighestPriority().getFirst();
+        //System.out.println("[Switching from " + RL.getCurrentHighestPriority().getLast().getID() + " to " + currentRunningProcess.getID() + "]");
         System.out.print(currentRunningProcess.getID());
 
     }
@@ -269,7 +282,8 @@ public class source {
     }
     public static void main(String[] args) throws Exception {
         
-        filePath = "input1.txt";       //for laptop, "CS143B-Project1\\input1.txt"
+        //filePath = "input1.txt";
+        filePath = "CS143B-Project1\\input1.txt";        //for laptop
 
         try(Scanner bim = new Scanner(new FileReader(filePath))) {
 
