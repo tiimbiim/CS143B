@@ -1,3 +1,5 @@
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Scanner;
 import java.io.FileReader;
 import java.io.IOException;
@@ -67,7 +69,7 @@ public class source {
 
     }
 
-    public static void deleteChildren(pcb process) {
+    private static void deleteChildren(pcb process) {
 
         for(pcb child : process.getChildList()) {
 
@@ -156,8 +158,8 @@ public class source {
 
         if(!RCB[resource].getWaitList().isEmpty()) {
 
-            RCB[resource].getOwners().put(RCB[resource].getWaitList().entrySet().iterator().next().getKey(), RCB[resource].getWaitList().get(0));      //Add the first PCB waiting for this resource to the owners list
-            PCB[RCB[resource].getWaitList().entrySet().iterator().next().getKey()].getResourceList().put(RCB[resource], RCB[resource].getWaitList().entrySet().iterator().next().getValue());       //add this resource to the PCB's resource list
+            RCB[resource].getOwners().put(getFirst(RCB[resource].getWaitList()).getKey(), getFirst(RCB[resource].getWaitList()).getValue());      //Add the first PCB waiting for this resource to the owners list
+            PCB[getFirst(RCB[resource].getWaitList()).getKey()].getResourceList().put(RCB[resource], RCB[resource].getWaitList().entrySet().iterator().next().getValue());       //add this resource to the PCB's resource list
             
             if( PCB[RCB[resource].getWaitList().entrySet().iterator().next().getKey()].getPriority() == 2)
                 RL.getPriorityTwo().add(PCB[RCB[resource].getWaitList().entrySet().iterator().next().getKey()]);
@@ -208,6 +210,14 @@ public class source {
 
 
     }
+
+    public static Map.Entry<Integer,Integer> getFirst(Map<Integer, Integer> map) {
+
+        for(Map.Entry<Integer,Integer> entry : map.entrySet()) { return entry; }
+
+        return null;
+
+    } 
 
     public static void printAllRLPriorities() {
 
