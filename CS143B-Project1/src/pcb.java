@@ -41,6 +41,7 @@ public class pcb implements Comparable<pcb> {
     public int compareTo(pcb other) { return Integer.compare(other.priority, this.priority); }
 
     int getID() { return this.id; }
+    void setID(int newID) { this.id = newID; }
     
     void setParent(int newParent) { this.parent = newParent; }
     int getParent() { return this.parent; }

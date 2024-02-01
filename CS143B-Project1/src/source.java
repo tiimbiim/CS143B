@@ -1,6 +1,7 @@
 import java.util.Map;
 import java.util.Scanner;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 
 public class source {
@@ -73,6 +74,17 @@ public class source {
         for(pcb child : process.getChildList()) {
 
             deleteChildren(child);
+            child.getResourceList().clear();
+
+            for(int i = 0; i < RCB.length; i++) {
+
+                if(RCB[i].getOwners().containsKey(child.getID()))
+                    RCB[i].getOwners().remove(child.getID());
+
+            }
+
+
+
             //release resources too
         }
 
@@ -124,21 +136,9 @@ public class source {
 
             // System.out.println("[Process " + caller + " has requested " + units + " units of resource " + resource + " but there are only " + RCB[resource].getUnitCount() + "]");
             
-            // if(PCB[caller].getResourceList().containsKey(RCB[resource]))        //the calling function owns this resource (hence why it has no units), so it should not get waitlisted
-            //     return;
 
             RCB[resource].getWaitList().put(caller, units);
             PCB[caller].setState(pcb.STATE.BLOCKED.VALUE);
-            
-            // if(RL.getCurrentHighestPriority().size() == 1) {
-
-            //     if(RL.getCurrentHighestPriority().getFirst().getPriority() == pcb.STATE.BLOCKED.VALUE) {        //strange case where a lone process needs to be proc switched bc of being waitlisted
-    
-                    
-    
-            //     }
-    
-            // }
 
             RL.getCurrentHighestPriority().remove(PCB[caller]);
             currentRunningProcess = RL.getCurrentHighestPriority().getFirst();
@@ -165,7 +165,7 @@ public class source {
             }
         }
         else {
-
+            currentRunningProcess.setID(-1);        //special case where error occurs
             System.out.println("-1");       //the calling process does not own/have enough of the resource to release
             return;
 
@@ -285,6 +285,9 @@ public class source {
         //filePath = "input1.txt";
         filePath = "CS143B-Project1\\input1.txt";        //for laptop
 
+        //File output = new File("output.txt");
+        FileWriter writer = new FileWriter("output.txt");
+
         try(Scanner bim = new Scanner(new FileReader(filePath))) {
 
             while(bim.hasNextLine()) {
@@ -308,10 +311,14 @@ public class source {
 
                         //System.out.println(command + number1 + number2);  
 
-                        if(command.equals("rq"))
+                        if(command.equals("rq")) {
                             request(number1, number2, currentRunningProcess.getID());
-                        else if(command.equals("rl"))
+                            writer.write(Integer.toString(currentRunningProcess.getID()));
+                        }
+                        else if(command.equals("rl")) {
                             release(number1, number2, currentRunningProcess.getID());
+                            writer.write(Integer.toString(currentRunningProcess.getID()));
+                        }
                         else {
                             //System.out.println(command + number1 + number2); 
                             System.out.println("bad input");
@@ -323,10 +330,14 @@ public class source {
                     }
 
                     //System.out.println(command + number1);        //for 1 parameter commands (cr, de)
-                    if(command.equals("cr"))
+                    if(command.equals("cr")) {
                         create(number1, currentRunningProcess.getID());
-                    else if(command.equals("de"))
+                        writer.write(Integer.toString(currentRunningProcess.getID()));
+                    }
+                    else if(command.equals("de")) {
                         delete(number1);
+                        writer.write(Integer.toString(currentRunningProcess.getID()));
+                    }
                     else {
                         //System.out.println(command + number1);
                         System.out.println("bad input");
@@ -339,21 +350,25 @@ public class source {
                     
                 //System.out.println(command);      //for 0 parameter commands (in, to)
 
-                if(command.equals("in"))    
+                if(command.equals("in")) {
                     init();
-                else if(command.equals("to"))
+                    writer.write("\n" + Integer.toString(currentRunningProcess.getID()));
+                }
+                else if(command.equals("to")) {
                     timeOut();
+                    writer.write(Integer.toString(currentRunningProcess.getID()));
+                }
                 else {
                     //System.out.println(command);
                     System.out.println("bad input");
                 }
 
                 //System.out.println(currentRunningProcess.getID());
-
                 bim2.close();
             }
-
-            printAllRLPriorities();
+            
+            writer.close();
+            //printAllRLPriorities();
 
         }
         catch (IOException e) {
