@@ -11,10 +11,26 @@ public class source {
     static RL RL;
     static pcb currentRunningProcess;
     static String filePath;
-    
+    static int numRunningProcesses = 0;
+
+    /**
+     * 
+     * @param priority The priority of the process to be created
+     * @param caller   The ID of the currently running process
+     * 
+     */
     public static void create(int priority, int caller) {
         
+        if(numRunningProcesses > 16) {
+
+            currentRunningProcess.setID(-1);        //There are too many processes being created, error
+            return;
+
+        }
+
         pcb newProcess = new pcb();
+
+        numRunningProcesses += 1;
 
         newProcess.setState(pcb.STATE.READY.VALUE);
         newProcess.setParent(caller);
@@ -41,28 +57,41 @@ public class source {
             RL.getPriorityZero().add(newProcess);
             if(RL.getPriorityZero().getFirst() == newProcess) { currentRunningProcess = RL.getPriorityZero().getFirst(); }
         }
-        else { System.out.println("An invalid priority has been entered"); }
+        else { 
+            //System.out.println("An invalid priority has been entered"); 
+            currentRunningProcess.setID(-1);
+        }
         
 
         System.out.print(currentRunningProcess.getID());
 
     }
-
+    
+    /**
+     * 
+     * @param process The ID of the process to be deleted.
+     * 
+     */
     public static void delete(int process) {
 
-        deleteChildren(PCB[process]);
-        // release resources too
+        if(process > 15) {
+            currentRunningProcess.setID(-1);        //specified process is out of range, error
+            return;
+        }
 
+        if(PCB[process] == null) {
+            currentRunningProcess.setID(-1);        //specified process doesn't exist, error
+            return;
+        }
+
+        deleteChildren(PCB[process]);
         PCB[PCB[process].getParent()].getChildList().remove(PCB[process]);
         
         for(pcb p : RL.getCurrentHighestPriority()) {
 
-            if(p.getID() == process) {
-
-                RL.getCurrentHighestPriority().remove(p);
-                //break;
-
-            }
+            if(p.getID() == process)
+                 RL.getCurrentHighestPriority().remove(p);
+    
         }
 
         System.out.print(currentRunningProcess.getID());
@@ -113,7 +142,13 @@ public class source {
         
 
     }
-
+    /**
+     * 
+     * @param resource  The ID of the resource that is being requested
+     * @param units     The number of units of the resource that is being requested
+     * @param caller    The ID of the process requesting the resource
+     * 
+     */
     public static void request(int resource, int units, int caller) {
 
         // System.out.println("[" + units + " units of resource " + resource + " have been requested]");
@@ -148,6 +183,13 @@ public class source {
 
     }
 
+    /**
+     * 
+     * @param resource  The ID of the resource to be released
+     * @param units     The  number of units of the resource to be released
+     * @param caller    The ID of the process attempting ot release resource units
+     * 
+     */
     public static void release(int resource, int units, int caller) {
 
         if(PCB[caller].getResourceList().containsKey(RCB[resource]) && PCB[caller].getResourceList().get(RCB[resource]) >= units) {      //if the process actually owns the resource and has more than it's trying to release
@@ -226,7 +268,12 @@ public class source {
 
 
     }
-
+    /**
+     * 
+     * @param map The map to get the first element of
+     * @return    Returns either a Map entry or null
+     * 
+     */
     public static Map.Entry<Integer,Integer> getFirst(Map<Integer, Integer> map) {
 
         for(Map.Entry<Integer,Integer> entry : map.entrySet()) { return entry; }
