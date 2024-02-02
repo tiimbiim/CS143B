@@ -14,11 +14,11 @@ public class RL {
 
     }
 
-    LinkedList<pcb> getPriorityZero() { return PriorityZero; }
-    LinkedList<pcb> getPriorityOne() { return PriorityOne; }
-    LinkedList<pcb> getPriorityTwo() { return PriorityTwo; }
+    public LinkedList<pcb> getPriorityZero() { return PriorityZero; }
+    public LinkedList<pcb> getPriorityOne() { return PriorityOne; }
+    public LinkedList<pcb> getPriorityTwo() { return PriorityTwo; }
 
-    LinkedList<pcb> getCurrentHighestPriority() {
+    public LinkedList<pcb> getCurrentHighestPriority() {
 
         if(PriorityTwo.isEmpty()) {
 

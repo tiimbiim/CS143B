@@ -25,8 +25,8 @@ public class source {
         
         if(numRunningProcesses > 16) {
 
-            System.out.println("curently in create - processes > 16");
-            //currentRunningProcess.setID(-1);        //There are too many processes being created, error
+            // System.out.println("curently in create - processes > 16");
+            currentRunningProcess.setID(-1);        //There are too many processes being created, error
             return -1;
 
         }
@@ -50,25 +50,25 @@ public class source {
         if(priority == 2) { 
 
             RL.getPriorityTwo().add(newProcess); 
-            //if(RL.getPriorityTwo().getFirst() == newProcess) { currentRunningProcess = RL.getPriorityTwo().getFirst(); }
+            // if(RL.getPriorityTwo().getFirst() == newProcess) { currentRunningProcess = RL.getPriorityTwo().getFirst(); }
         }
         else if(priority == 1) { 
             RL.getPriorityOne().add(newProcess); 
-            //if(RL.getPriorityOne().getFirst() == newProcess) { currentRunningProcess = RL.getPriorityOne().getFirst(); }
+            // if(RL.getPriorityOne().getFirst() == newProcess) { currentRunningProcess = RL.getPriorityOne().getFirst(); }
         }
         else if(priority == 0) { 
             RL.getPriorityZero().add(newProcess);
-            //if(RL.getPriorityZero().getFirst() == newProcess) { currentRunningProcess = RL.getPriorityZero().getFirst(); }
+            // if(RL.getPriorityZero().getFirst() == newProcess) { currentRunningProcess = RL.getPriorityZero().getFirst(); }
         }
         else { 
-            //System.out.println("An invalid priority has been entered"); 
-            System.out.println("curently in create - invalid priority");
+            // System.out.println("An invalid priority has been entered"); 
+            // System.out.println("curently in create - invalid priority");
             currentRunningProcess.setID(-1);
         }
 
         currentRunningProcess = RL.getCurrentHighestPriority().getFirst();
         
-        System.out.print(currentRunningProcess.getID());
+        // System.out.print(currentRunningProcess.getID());
         return currentRunningProcess.getID();
 
     }
@@ -128,7 +128,7 @@ public class source {
 
         currentRunningProcess = RL.getCurrentHighestPriority().getFirst();
 
-        System.out.print(currentRunningProcess.getID());
+        // System.out.print(currentRunningProcess.getID());
         return currentRunningProcess.getID();
 
     }
@@ -174,7 +174,7 @@ public class source {
         }
         else {
 
-            System.out.println("error");
+            // System.out.println("error");
 
         }
 
@@ -195,14 +195,14 @@ public class source {
     public static int request(int resource, int units, int caller) throws IOException {
 
         if(resource > 3) {      //OOB error
-            System.out.println("request OOB ERROR");
+            // System.out.println("request OOB ERROR");
             currentRunningProcess.setID(-1);
             return -1;
         }
 
         if(units > RCB[resource].getTotalUnits()) {
 
-            System.out.println("request TOO MANY RESOURCES REQUESTED ERROR");
+            //  System.out.println("request TOO MANY RESOURCES REQUESTED ERROR");
             currentRunningProcess.setID(-1);
             return -1;
 
@@ -227,7 +227,7 @@ public class source {
 
             RCB[resource].decrementUnits(units);
 
-            System.out.print(currentRunningProcess.getID());
+            // System.out.print(currentRunningProcess.getID());
 
         }
         else {      //the resource has no free units
@@ -241,7 +241,7 @@ public class source {
 
             RL.getCurrentHighestPriority().remove(PCB[caller]);
             currentRunningProcess = RL.getCurrentHighestPriority().getFirst();
-            System.out.print(currentRunningProcess.getID());
+            // System.out.print(currentRunningProcess.getID());
         }
         
         return currentRunningProcess.getID();
@@ -284,7 +284,7 @@ public class source {
         else {
             //System.out.println("curently in release");
             currentRunningProcess.setID(-1);        //special case where error occurs
-            System.out.println("-1");       //the calling process does not own/have enough of the resource to release
+            // System.out.println("-1");       //the calling process does not own/have enough of the resource to release
             return -1;
 
         }
@@ -313,7 +313,7 @@ public class source {
 
         }
 
-        System.out.print(currentRunningProcess.getID());
+        // System.out.print(currentRunningProcess.getID());
         return currentRunningProcess.getID();
 
     }
@@ -328,8 +328,8 @@ public class source {
         }
 
         currentRunningProcess = RL.getCurrentHighestPriority().getFirst();
-        //System.out.println("[Switching from " + RL.getCurrentHighestPriority().getLast().getID() + " to " + currentRunningProcess.getID() + "]");
-        System.out.print(currentRunningProcess.getID());
+        // System.out.println("[Switching from " + RL.getCurrentHighestPriority().getLast().getID() + " to " + currentRunningProcess.getID() + "]");
+        // System.out.print(currentRunningProcess.getID());
         return currentRunningProcess.getID();
 
     }
@@ -343,7 +343,7 @@ public class source {
         RCB = new rcb[] {new rcb(1), new rcb(1), new rcb(2), new rcb(3)};
         RL = new RL();
 
-        System.out.print("\n");
+        // System.out.print("\n");
 
         numRunningProcesses = 0;
 
@@ -483,8 +483,8 @@ public class source {
                             writer.write(Integer.toString(release(number1, number2, currentRunningProcess.getID())));
                         }
                         else {
-                            //System.out.println(command + number1 + number2); 
-                            System.out.println("bad input");
+                            // System.out.println(command + number1 + number2); 
+                            // System.out.println("bad input");
                         }
 
                        //System.out.println(currentRunningProcess.getID());
@@ -502,8 +502,8 @@ public class source {
                         writer.write(Integer.toString(delete(number1)));
                     }
                     else {
-                        //System.out.println(command + number1);
-                        System.out.println("bad input");
+                        // System.out.println(command + number1);
+                        // System.out.println("bad input");
                     }
 
                     //System.out.println(currentRunningProcess.getID());
@@ -522,8 +522,8 @@ public class source {
                     writer.write(Integer.toString(timeOut()));
                 }
                 else {
-                    //System.out.println(command);
-                    System.out.println("bad input");
+                    // System.out.println(command);
+                    // System.out.println("bad input");
                 }
 
                 //System.out.print("main - " + currentRunningProcess.getID());
@@ -531,7 +531,6 @@ public class source {
             }
             
             writer.close();
-            printAllRLPriorities();
 
         }
         catch (IOException e) {

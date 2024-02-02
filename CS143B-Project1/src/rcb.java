@@ -20,29 +20,29 @@ public class rcb {
 
     }
 
-    static void resetID() { nextID = 0; }
+    public static void resetID() { nextID = 0; }
 
-    int getTotalUnits() { return this.totalUnits; }
+    public int getTotalUnits() { return this.totalUnits; }
 
-    void decrementUnits(int units) { 
+    public void decrementUnits(int units) { 
         //System.out.println("Units decrementing by " + units);
         this.units -= units; 
     }
-    void incrementUnits(int units) { 
+    public void incrementUnits(int units) { 
         //System.out.println("Units incrementing by " + units);
         this.units += units; 
     }
-    int getUnitCount() { return this.units; }
+    public int getUnitCount() { return this.units; }
 
-    int getID() { return this.id; }
+    public int getID() { return this.id; }
 
-    Map<Integer, Integer> getWaitList() { return this.waitList; }
-    Map<Integer, Integer> getOwners() { return this.owners; }
+    public Map<Integer, Integer> getWaitList() { return this.waitList; }
+    public Map<Integer, Integer> getOwners() { return this.owners; }
 
-    String printResource() { 
+    public String printResource() { 
         return "[Resource " + getID() + " (" + this + ")" + "]"; 
     }
-    String printOwners() { 
+    public String printOwners() { 
 
         String s = "Owners: \n";
 
@@ -54,7 +54,7 @@ public class rcb {
 
         return s;
     }
-    String printWaitList() { 
+    public String printWaitList() { 
 
         String s = "Wait List: \n";
 
