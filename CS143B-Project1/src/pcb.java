@@ -79,7 +79,8 @@ public class pcb implements Comparable<pcb> {
 
         for (rcb p : resourcesList.keySet()) {
 
-            r += p.printResource();
+            r += p.printResource() + " ";
+            r += getResourceList().get(p);
 
         }
 
