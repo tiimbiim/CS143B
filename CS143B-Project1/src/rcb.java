@@ -6,13 +6,14 @@ import java.util.Map;
 public class rcb {
     
     static int nextID = 0;
-    int units, id;
+    int units, id, totalUnits;
     Map<Integer, Integer> owners;
     Map<Integer, Integer> waitList;     //in the form (Process : UnitsHeld)
 
     public rcb(int units) {
 
         this.units = units;
+        this.totalUnits = units;
         this.id = nextID++;
         owners = new HashMap<>();
         waitList = new LinkedHashMap<>();
@@ -20,6 +21,8 @@ public class rcb {
     }
 
     static void resetID() { nextID = 0; }
+
+    int getTotalUnits() { return this.totalUnits; }
 
     void decrementUnits(int units) { 
         //System.out.println("Units decrementing by " + units);
