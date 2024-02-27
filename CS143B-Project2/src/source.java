@@ -131,6 +131,8 @@ public class source {
 
         for(int i = 0; i < numbers.length; i++) {
 
+            System.out.println("IM AT THE TOP OF THE LOOP");
+
             int number = Integer.parseInt(numbers[i]);
 
             int s = number >> 18;
@@ -153,6 +155,8 @@ public class source {
                         nextFree = freePages[j];
                         freePages[j] = -1;
 
+                        System.out.println("[PT NOT RESIDENT] next free page: " + nextFree);
+
                         PM[2*s+1] = nextFree;       //allocate next free frame
 
                         break;
@@ -161,11 +165,11 @@ public class source {
                 }
 
                 PM[PM[2*s+1]*512 + p] = D[diskBlock][p];
-
+                System.out.println("Loading block from disk: " + D[diskBlock][p]);
 
             }
 
-            if(PM[PM[2*s+1]*512 + p] < 0) {
+            if(PM[PM[2*s+1]*512 + p] < 0 ) {
 
                 System.out.println("PAGE NOT RESIDENT");
 
@@ -178,6 +182,8 @@ public class source {
 
                         nextFree = freePages[j];
                         freePages[j] = -1;
+
+                        System.out.println("[PAGE NOT RESIDENT] next free page: " + nextFree);
 
                         PM[PM[2*s+1]*512 + p] = nextFree;
 
@@ -197,10 +203,18 @@ public class source {
                 PA = pg*512+w; 
 
                 System.out.println("PT: " + PT + " pg: " + pg);
+                System.out.println("PA: " + PA);
+
+            }
+            else {
+
+                System.out.println("Error: -1");
 
             }
 
-            System.out.println("PA: " + PA);
+            int PT = PM[2*s+1];
+            int pg = PM[PT*512+p];
+            PA = pg*512+w; 
 
         }
 
